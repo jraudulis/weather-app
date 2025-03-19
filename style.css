@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 html {
     box-sizing: border-box;
 }
@@ -8,6 +10,28 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+
+#search {
+    border: solid .5px;
+    width: 200px;
+    height: 35px;
+    border-radius: 5px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    background-color: lightskyblue;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 120px;
+    height: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 5px;
 }
 
 #container {
@@ -19,6 +43,37 @@ body{
     height: 500px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 5px;
+    transition: all 0.5s;
+}
+
+.clear {
+    background-image: url(images/clear.jpg);
+    background-size: cover;
+}
+
+.parttly {
+    background-image: url(images/partly.jpg);
+    background-size: cover;
+}
+
+.cloudy {
+    background-image: url(images/cloudy.jpg);
+    background-size: cover;
+}
+
+.fog {
+    background-image: url(images/fog.jpg);
+    background-size: cover;
+}
+
+.lightning {
+    background-image: url(images/lightning.jpg);
+    background-size: cover;
+}
+
+.rain {
+    background-image: url(images/rain.jpg);
+    background-size: cover;
 }
 
 .loader {
@@ -42,6 +97,16 @@ body{
     text-align: center;
     margin: 20px;
     border-radius: 5px;
-    background-color: lightblue;
+    /* background-color: rgba(211, 211, 211, 0.5); */
     display: block;
+}
+
+#location {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+#temperature {
+    font-size: 4rem;
+    margin-top: 0;
 }
