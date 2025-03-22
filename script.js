@@ -6,9 +6,11 @@ const searchInput = document.getElementById('search');
 const btn = document.getElementById('btn');
 const locationName = document.getElementById('location');
 const temperature = document.getElementById('temperature');
+const feelLikeTemperature = document.getElementById('feel-like');
 const appContainer = document.getElementById('container')
 const weatherInfoContainer = document.querySelector('.weather-info');
 const loadAnimation = document.querySelector('.loader');
+const weatherIcon = document.getElementById('icon');
 
 let weatherDescription;
 
@@ -37,6 +39,8 @@ function updateBackground() {
     case 'fog':
         appContainer.classList.add('fog');
         break;
+        default: 
+        appContainer.classList.add('default');
     }
 };
 
@@ -50,7 +54,7 @@ async function fetchLocationCoordinates() {
             weatherInfoContainer.style.display = 'none';
             loadAnimation.style.display = 'block';
             let data = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b`);
-                let resp = await data.json();
+            let resp = await data.json();
 
                 if (!resp || resp.length === 0) {
                     loadAnimation.style.display = 'none';
@@ -73,16 +77,20 @@ async function fetchTemperatureData(latitude, longitude, location){
     try{
      let data = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b&units=metric`);
     let resp = await data.json();
-    console.log(resp.weather[0].description);
     weatherDescription = resp.weather[0].description.toLowerCase();
 
     if (!resp.main) return alert('Server error');
     else {
-        let temperatureData = Math.round(resp.main.temp);
+        let tempData = Math.round(resp.main.temp);
+        let feelLikeTempData = Math.round(resp.main.feels_like);
+        let apiIcon = resp.weather[0].icon;
+
         loadAnimation.style.display = 'none';
         weatherInfoContainer.style.display = 'block';
+        weatherIcon.src = `https://openweathermap.org/img/wn/${apiIcon}@2x.png`;
         locationName.textContent = `${location}`;
-        temperature.textContent = `${temperatureData}ºC`;
+        temperature.textContent = `${tempData}ºC`;
+        feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}`;
         updateBackground();
         searchInput.value = '';  
     }

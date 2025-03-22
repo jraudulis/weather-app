@@ -76,6 +76,10 @@ button {
     background-size: cover;
 }
 
+.default {
+    background-color: black;
+}
+
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
@@ -92,21 +96,33 @@ button {
     100% { transform: rotate(360deg); }
   }
 .weather-info {
-    width: 90%;
+    width: 50%;
     height: 55%;
     text-align: center;
     margin: 20px;
     border-radius: 5px;
     /* background-color: rgba(211, 211, 211, 0.5); */
-    display: block;
+    display: none;
+}
+
+#icon {
+    position: relative;
+    top: 30px;
 }
 
 #location {
-    font-weight: 500;
-    margin-bottom: 0;
+    font-weight: 300;
+    margin: 0;
 }
 
 #temperature {
     font-size: 4rem;
-    margin-top: 0;
+    margin: 0;
+}
+
+#feel-like{
+    position: relative;
+    top: -15px;
+    margin: 0;
+    font-weight: 300;
 }
