@@ -49,7 +49,7 @@ async function fetchLocationCoordinates() {
         try {
             weatherInfoContainer.style.display = 'none';
             loadAnimation.style.display = 'block';
-            let data = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b`);
+            let data = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b`);
                 let resp = await data.json();
 
                 if (!resp || resp.length === 0) {
