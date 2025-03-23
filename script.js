@@ -11,37 +11,18 @@ const appContainer = document.getElementById('container')
 const weatherInfoContainer = document.querySelector('.weather-info');
 const loadAnimation = document.querySelector('.loader');
 const weatherIcon = document.getElementById('icon');
+const description = document.getElementById('weather-description');
+const unsplashKey = 'so2V6iCiqSgz7kgwSsRCx9r_Xb7S0z04bUZvTV8wIMs';
 
 let weatherDescription;
 
-function updateBackground() {
+async function updateBackground() {
 
-    appContainer.className = '';
-    
-    switch(weatherDescription) {
-        case 'few clouds':
-        case 'clear sky':
-        case 'overcast clouds':
-        appContainer.classList.add('clear');
-        break;
-    case 'scattered clouds':
-    case 'broken clouds':
-        appContainer.classList.add('cloudy');
-        break;
-    case 'shower rain':
-    case 'rain':
-        appContainer.classList.add('rain');
-        break;
-    case 'thunderstorm':
-        appContainer.classList.add('lightning');
-        break;
-    case 'mist':
-    case 'fog':
-        appContainer.classList.add('fog');
-        break;
-        default: 
-        appContainer.classList.add('default');
-    }
+    let data = await fetch(`https://api.unsplash.com/search/photos?query=${weatherDescription}&client_id=${unsplashKey}`);
+    let resp = await data.json();
+    console.log(resp);
+    let image = resp.results[Math.floor(Math.random() * resp.results.length)].urls.regular;
+    appContainer.style.backgroundImage = `url(${image})`;
 };
 
 async function fetchLocationCoordinates() {
@@ -76,19 +57,22 @@ async function fetchLocationCoordinates() {
 async function fetchTemperatureData(latitude, longitude, location){
     try{
      let data = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b&units=metric`);
-    let resp = await data.json();
-    weatherDescription = resp.weather[0].description.toLowerCase();
+     let resp = await data.json();
+     console.log(resp);
 
     if (!resp.main) return alert('Server error');
     else {
+        weatherDescription = resp.weather[0].description.toLowerCase();
         let tempData = Math.round(resp.main.temp);
         let feelLikeTempData = Math.round(resp.main.feels_like);
+        let country = resp.sys.country;
         let apiIcon = resp.weather[0].icon;
 
         loadAnimation.style.display = 'none';
         weatherInfoContainer.style.display = 'block';
         weatherIcon.src = `https://openweathermap.org/img/wn/${apiIcon}@2x.png`;
-        locationName.textContent = `${location}`;
+        locationName.textContent = `${location}, ${country}`;
+        description.textContent = `${weatherDescription}`;
         temperature.textContent = `${tempData}ºC`;
         feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}`;
         updateBackground();
