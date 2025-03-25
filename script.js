@@ -2,6 +2,7 @@
 // 2 display data on display
 
 // dom selectors
+const form = document.getElementById('search-form');
 const searchInput = document.getElementById('search');
 const btn = document.getElementById('btn');
 const locationName = document.getElementById('location');
@@ -12,79 +13,116 @@ const weatherInfoContainer = document.querySelector('.weather-info');
 const loadAnimation = document.querySelector('.loader');
 const weatherIcon = document.getElementById('icon');
 const description = document.getElementById('weather-description');
-const unsplashKey = 'so2V6iCiqSgz7kgwSsRCx9r_Xb7S0z04bUZvTV8wIMs';
+
+const OPENWEATHER_API_KEY = '08ff5bfd6bbd0c08f59cd1c0c38d242b';
+const UNSPLASH_API_KEY = 'so2V6iCiqSgz7kgwSsRCx9r_Xb7S0z04bUZvTV8wIMs';
 
 let weatherDescription;
 
 async function updateBackground() {
+    try {
+        if (!weatherDescription) return;
 
-    let data = await fetch(`https://api.unsplash.com/search/photos?query=${weatherDescription}&client_id=${unsplashKey}`);
-    let resp = await data.json();
-    console.log(resp);
-    let image = resp.results[Math.floor(Math.random() * resp.results.length)].urls.regular;
-    appContainer.style.backgroundImage = `url(${image})`;
-};
-
-async function fetchLocationCoordinates() {
-    let input = searchInput.value;
-
-    if (!input) {
-        return alert('Enter location');
-    } else {
-        try {
-            weatherInfoContainer.style.display = 'none';
-            loadAnimation.style.display = 'block';
-            let data = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b`);
-            let resp = await data.json();
-
-                if (!resp || resp.length === 0) {
-                    loadAnimation.style.display = 'none';
-                    weatherInfoContainer.style.display = 'block';
-                    return alert('Enter valid locaton');
-                } else {
-                    const location = resp[0].name;
-                    const latitude = resp[0].lat;
-                    const longitude = resp[0].lon;
-                    fetchTemperatureData(latitude, longitude, location);
-                }  
-            } catch(err) {
-                loadAnimation.style.display = 'none';
-                alert(`Error occured while getting data: ${err.message}`);
-            }
+        const response = await fetch(`https://api.unsplash.com/search/photos?query=${weatherDescription}&client_id=${UNSPLASH_API_KEY}`);
+        
+        if (!response.ok) {
+            console.error('Unsplash API response not OK', response.status);
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+            const image = data.results[Math.floor(Math.random() * data.results.length)].urls.regular;
+            appContainer.style.backgroundImage = `url(${image})`;
+        }
+    } catch (error) {
+        console.error('Background update failed:', error);
     }
 }
 
-async function fetchTemperatureData(latitude, longitude, location){
-    try{
-     let data = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=08ff5bfd6bbd0c08f59cd1c0c38d242b&units=metric`);
-     let resp = await data.json();
-     console.log(resp);
+async function fetchLocationCoordinates() {
+    const input = searchInput.value.trim();
 
-    if (!resp.main) return alert('Server error');
-    else {
-        weatherDescription = resp.weather[0].description.toLowerCase();
-        let tempData = Math.round(resp.main.temp);
-        let feelLikeTempData = Math.round(resp.main.feels_like);
-        let country = resp.sys.country;
-        let apiIcon = resp.weather[0].icon;
+    if (!input) {
+        searchInput.style.border = '1px solid red';
+        return;
+    }   
+    try {
+        weatherInfoContainer.style.display = 'none';
+        loadAnimation.style.display = 'block';
+
+        const geoResponse = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${OPENWEATHER_API_KEY}`);
+        
+        if (!geoResponse.ok) {
+            throw new Error(`Geocoding API error: ${geoResponse.status}`);
+        }
+
+        const geoData = await geoResponse.json();
+        console.log(geoData);
+
+        if (!geoData || geoData.length === 0) {
+            alert('Enter a valid location');
+            loadAnimation.style.display = 'none';
+            return;
+        }
+
+        const { name: location, lat: latitude, lon: longitude } = geoData[0];
+        await fetchTemperatureData(latitude, longitude, location);
+
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+        loadAnimation.style.display = 'none';
+        weatherInfoContainer.style.display = 'block';
+    }
+}
+
+async function fetchTemperatureData(latitude, longitude, location) {
+    try {
+        const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPENWEATHER_API_KEY}&units=metric`);
+        
+        if (!weatherResponse.ok) {
+            throw new Error(`Weather API error: ${weatherResponse.status}`);
+        }
+
+        const weatherData = await weatherResponse.json();
+
+        if (!weatherData.main) {
+            alert('Server error');
+            return;
+        }
+
+        weatherDescription = weatherData.weather[0].description.toLowerCase();
+        const tempData = Math.round(weatherData.main.temp);
+        const feelLikeTempData = Math.round(weatherData.main.feels_like);
+        const country = weatherData.sys.country;
+        const apiIcon = weatherData.weather[0].icon;
+
+        weatherIcon.src = `https://openweathermap.org/img/wn/${apiIcon}@2x.png`;
+        locationName.textContent = `${location}, ${country}`;
+        description.textContent = weatherDescription;
+        temperature.textContent = `${tempData}ºC`;
+        feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}ºC`;
 
         loadAnimation.style.display = 'none';
         weatherInfoContainer.style.display = 'block';
-        weatherIcon.src = `https://openweathermap.org/img/wn/${apiIcon}@2x.png`;
-        locationName.textContent = `${location}, ${country}`;
-        description.textContent = `${weatherDescription}`;
-        temperature.textContent = `${tempData}ºC`;
-        feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}`;
-        updateBackground();
-        searchInput.value = '';  
+
+        await updateBackground();
+        searchInput.value = '';
+
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+        loadAnimation.style.display = 'none';
+        weatherInfoContainer.style.display = 'block';
     }
-     } catch(err) {
-            alert(`Error while recieving temperature data: ${err.message}`);
-        } finally {
-            loadAnimation.style.display = 'none';
-            weatherInfoContainer.style.display = 'block';
-        }
 }
 
+function preventFormSubmission(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        fetchLocationCoordinates();
+    }
+}
 
 btn.addEventListener('click', fetchLocationCoordinates);
+searchInput.addEventListener('keypress', preventFormSubmission);
