@@ -44,10 +44,8 @@ async function updateBackground() {
 async function fetchLocationCoordinates() {
     const input = searchInput.value.trim();
 
-    if (!input) {
-        searchInput.style.border = '1px solid red';
-        return;
-    }   
+    if (!input) return;
+         
     try {
         weatherInfoContainer.style.display = 'none';
         loadAnimation.style.display = 'block';
@@ -59,16 +57,16 @@ async function fetchLocationCoordinates() {
         }
 
         const geoData = await geoResponse.json();
-        console.log(geoData);
 
         if (!geoData || geoData.length === 0) {
-            alert('Enter a valid location');
             loadAnimation.style.display = 'none';
+            displayErrorMessage();
             return;
+        } else {
+            const { name: location, lat: latitude, lon: longitude } = geoData[0];
+            await fetchTemperatureData(latitude, longitude, location);
+            checkAndRemoveErrorMessage();
         }
-
-        const { name: location, lat: latitude, lon: longitude } = geoData[0];
-        await fetchTemperatureData(latitude, longitude, location);
 
     } catch (error) {
         alert(`Error: ${error.message}`);
@@ -115,6 +113,21 @@ async function fetchTemperatureData(latitude, longitude, location) {
         loadAnimation.style.display = 'none';
         weatherInfoContainer.style.display = 'block';
     }
+}
+
+function checkAndRemoveErrorMessage() {
+    const p = form.querySelector('p');
+    if(p) p.remove();
+}
+
+
+function displayErrorMessage() {
+    checkAndRemoveErrorMessage();
+    const pElement = document.createElement('p');
+    const message = document.createTextNode('Enter valid location');
+    pElement.appendChild(message);
+    form.appendChild(pElement);
+    searchInput.value = '';
 }
 
 function preventFormSubmission(e) {
