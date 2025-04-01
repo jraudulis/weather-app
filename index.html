@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+  <script type="module" crossorigin src="/weather-app/assets/index-CKZn7syR.js"></script>
+  <link rel="stylesheet" crossorigin href="/weather-app/assets/index-DB5qDbwN.css">
+</head>
+<body>
+    <div id="container">
+        <h1 id="title">Weather App</h1>
+        <div class="search-wrapper">
+            <form id="search-form">
+                <label for="search"></label>
+                <input type="text" placeholder="Enter location" id="search" required>
+                <button type="button" id="btn">Search</button>
+            </form>
+        </div>
+        <div class="loader"></div>
+        <div class="weather-info">
+            <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="" id="icon">
+            <h3 id="location"></h3>
+            <h3 id="weather-description"></h3>
+            <h3 id="temperature"></h3>
+            <h3 id="feel-like"></h3>
+        </div>
+    </div>
+    <!--Script-->
+</body>
+</html>
