@@ -111,6 +111,29 @@ async function fetchTemperatureData(latitude, longitude, location) {
     }
 }
 
+// Get current date
+function getCurrentDate() {
+    const date = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+// Create a nice entrance animation
+function animateWeatherInfo() {
+    const weatherInfo = document.querySelector('.weather-info');
+    weatherInfo.style.opacity = '0';
+    weatherInfo.style.transform = 'translateY(20px)';
+    weatherInfo.style.display = 'block';
+    
+    // Trigger reflow
+    weatherInfo.offsetHeight;
+    
+    // Add transition properties
+    weatherInfo.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    weatherInfo.style.opacity = '1';
+    weatherInfo.style.transform = 'translateY(0)';
+  }
+
 function checkAndRemoveErrorMessage() {
     const p = form.querySelector('p');
     if(p) p.remove();
