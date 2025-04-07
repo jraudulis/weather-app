@@ -43,8 +43,7 @@ async function fetchLocationCoordinates() {
     if (!input) return;
          
     try {
-        weatherInfoContainer.style.display = 'none';
-        loadAnimation.style.display = 'block';
+        displayLoader();
 
         const geoResponse = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&appid=${OPENWEATHER_API_KEY}`);
         
@@ -55,7 +54,7 @@ async function fetchLocationCoordinates() {
         const geoData = await geoResponse.json();
 
         if (!geoData || geoData.length === 0) {
-            loadAnimation.style.display = 'none';
+            hideLoader();
             displayErrorMessage();
             return;
         } else {
@@ -66,8 +65,7 @@ async function fetchLocationCoordinates() {
 
     } catch (error) {
         alert(`Error: ${error.message}`);
-        loadAnimation.style.display = 'none';
-        weatherInfoContainer.style.display = 'block';
+        hideLoader();
     }
 }
 
@@ -98,17 +96,26 @@ async function fetchTemperatureData(latitude, longitude, location) {
         temperature.textContent = `${tempData}ºC`;
         feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}ºC`;
 
-        loadAnimation.style.display = 'none';
-        weatherInfoContainer.style.display = 'block';
-
         await updateBackground();
+        hideLoader();
         searchInput.value = '';
 
     } catch (error) {
         alert(`Error: ${error.message}`);
-        loadAnimation.style.display = 'none';
-        weatherInfoContainer.style.display = 'block';
+        hideLoader();
     }
+}
+
+// Display loader animation
+function displayLoader() {
+    weatherInfoContainer.style.display = 'none';
+    loadAnimation.style.display = 'block';
+}
+
+// Hide loader animation
+function hideLoader() {
+    loadAnimation.style.display = 'none';
+    weatherInfoContainer.style.display = 'block';
 }
 
 // Get current date
@@ -139,14 +146,25 @@ function checkAndRemoveErrorMessage() {
     if(p) p.remove();
 }
 
-
 function displayErrorMessage() {
-    checkAndRemoveErrorMessage();
-    const pElement = document.createElement('p');
+
+    const existingMessage = document.querySelector('.toast');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    const div = document.createElement('div');
+    div.className = 'toast toast-error';
     const message = document.createTextNode('Enter valid location');
-    pElement.appendChild(message);
-    form.appendChild(pElement);
-    searchInput.value = '';
+    div.appendChild(message);
+    appContainer.appendChild(div);
+
+    setTimeout(() => div.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        div.classList.remove('show');
+        setTimeout(() => div.remove(), 300);
+    }, 3000);
+    
 }
 
 function preventFormSubmission(e) {

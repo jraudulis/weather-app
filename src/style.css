@@ -201,7 +201,7 @@ body {
 /* Toast notifications */
 .toast {
   position: fixed;
-  bottom: 30px;
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%) translateY(100px);
   padding: 12px 20px;
@@ -212,7 +212,7 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 .toast.show {
@@ -231,7 +231,7 @@ body {
 /* Animations */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
-}
+} 
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
