@@ -95,6 +95,7 @@ async function fetchTemperatureData(latitude, longitude, location) {
         description.textContent = weatherDescription;
         temperature.textContent = `${tempData}ºC`;
         feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}ºC`;
+        animateWeatherInfo();
 
         await updateBackground();
         hideLoader();
@@ -131,12 +132,10 @@ function animateWeatherInfo() {
     weatherInfo.style.opacity = '0';
     weatherInfo.style.transform = 'translateY(20px)';
     weatherInfo.style.display = 'block';
-    
     // Trigger reflow
     weatherInfo.offsetHeight;
     
-    // Add transition properties
-    weatherInfo.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    weatherInfo.style.transition = 'opacity 1s ease, transform 1s ease';
     weatherInfo.style.opacity = '1';
     weatherInfo.style.transform = 'translateY(0)';
   }
