@@ -60,7 +60,6 @@ async function fetchLocationCoordinates() {
         } else {
             const { name: location, lat: latitude, lon: longitude } = geoData[0];
             await fetchTemperatureData(latitude, longitude, location);
-            checkAndRemoveErrorMessage();
         }
 
     } catch (error) {
@@ -140,9 +139,8 @@ function animateWeatherInfo() {
     weatherInfo.style.transform = 'translateY(0)';
   }
 
-function checkAndRemoveErrorMessage() {
-    const p = form.querySelector('p');
-    if(p) p.remove();
+function changeToF(){
+    return alert('Working on it...');
 }
 
 function displayErrorMessage() {
@@ -162,8 +160,7 @@ function displayErrorMessage() {
     setTimeout(() => {
         div.classList.remove('show');
         setTimeout(() => div.remove(), 300);
-    }, 3000);
-    
+    }, 3000); 
 }
 
 function preventFormSubmission(e) {
@@ -175,3 +172,4 @@ function preventFormSubmission(e) {
 
 btn.addEventListener('click', fetchLocationCoordinates);
 searchInput.addEventListener('keypress', preventFormSubmission);
+temperature.addEventListener('click', changeToF)
