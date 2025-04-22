@@ -12,8 +12,11 @@ const loadAnimation = document.querySelector('.loader');
 const weatherIcon = document.getElementById('icon');
 const description = document.getElementById('weather-description');
 
-
+// Global variables for acces in other functions
 let weatherDescription;
+let currentTempCelsius;
+let feelsLikeCelsius;
+let isCelsius = true;
 
 async function updateBackground() {
     try {
@@ -84,16 +87,16 @@ async function fetchTemperatureData(latitude, longitude, location) {
         }
 
         weatherDescription = weatherData.weather[0].description.toLowerCase();
-        const tempData = Math.round(weatherData.main.temp);
-        const feelLikeTempData = Math.round(weatherData.main.feels_like);
+        currentTempCelsius = Math.round(weatherData.main.temp);
+        feelsLikeCelsius = Math.round(weatherData.main.feels_like);
         const country = weatherData.sys.country;
         const apiIcon = weatherData.weather[0].icon;
 
         weatherIcon.src = `https://openweathermap.org/img/wn/${apiIcon}@2x.png`;
         locationName.textContent = `${location}, ${country}`;
         description.textContent = weatherDescription;
-        temperature.textContent = `${tempData}ºC`;
-        feelLikeTemperature.textContent = `Feels like ${feelLikeTempData}ºC`;
+        temperature.textContent = `${currentTempCelsius}ºC`;
+        feelLikeTemperature.textContent = `Feels like ${feelsLikeCelsius}ºC`;
         animateWeatherInfo();
 
         await updateBackground();
@@ -139,9 +142,25 @@ function animateWeatherInfo() {
     weatherInfo.style.transform = 'translateY(0)';
   }
 
-function changeToF(){
-    return alert('Working on it...');
-}
+  function toggleTemperatures() {
+    if (isCelsius) {
+      // Convert Celsius to Fahrenheit and update display
+      let currentTempF = Math.round((currentTempCelsius * 9 / 5) + 32);
+      let feelsLikeF = Math.round((feelsLikeCelsius * 9 / 5) + 32);
+      temperature.textContent = `${currentTempF}ºF`;
+      feelLikeTemperature.textContent = `Feels like ${feelsLikeF}ºF`;
+  
+      // Toggle to Fahrenheit state
+      isCelsius = false;
+    } else {
+      // Display temperature in Celsius
+      temperature.textContent = `${currentTempCelsius}ºC`;
+      feelLikeTemperature.textContent = `Feels like ${feelsLikeCelsius}ºC`;
+  
+      // Toggle back to Celsius state
+      isCelsius = true;
+    }
+  }
 
 function displayErrorMessage() {
 
@@ -172,4 +191,4 @@ function preventFormSubmission(e) {
 
 btn.addEventListener('click', fetchLocationCoordinates);
 searchInput.addEventListener('keypress', preventFormSubmission);
-temperature.addEventListener('click', changeToF)
+temperature.addEventListener('click', toggleTemperatures)
